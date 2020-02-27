@@ -1,0 +1,51 @@
+{
+    "name": "skraeda/laravel-automapper",
+    "description": "Laravel wrapper for automapper-plus by Mark Gerarts",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["automapper", "converter", "object-to-object", "laravel"],
+    "version": "v0.0.1",
+    "authors": [
+        {
+            "name": "Gunnar Örn Baldursson",
+            "email": "gunnar@sjukraskra.is"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test:coverage": "vendor/bin/phpunit --coverage-html=coverage --log-junit coverage/report.xml"
+    },
+    "autoload": {
+        "psr-4": {
+            "Skraeda\\AutoMapper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Skraeda\\AutoMapper\\Tests\\": "tests/"
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Skraeda\\AutoMapper\\Providers\\AutoMapperServiceProvider"
+            ],
+            "aliases": {
+                "AutoMapper": "Skraeda\\AutoMapper\\Support\\Facades\\AutoMapperFacade"
+            }
+        }
+    },
+    "require": {
+        "php": ">=7.1.3",
+        "mark-gerarts/auto-mapper-plus": "^1.3",
+        "illuminate/support": "~5.6.0",
+        "illuminate/console": "~5.6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.6.0",
+        "mockery/mockery": "^1.3"
+    }
+}
