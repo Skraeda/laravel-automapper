@@ -18,15 +18,15 @@
     "autoload": {
         "psr-4": {
             "Skraeda\\AutoMapper\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Skraeda\\AutoMapper\\Tests\\": "tests/"
         },
         "files": [
             "src/Support/helpers.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Skraeda\\AutoMapper\\Tests\\": "tests/"
+        }
     },
     "extra": {
         "laravel": {
