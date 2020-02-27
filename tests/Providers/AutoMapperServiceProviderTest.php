@@ -3,6 +3,7 @@
 namespace Skraeda\AutoMapper\Tests\Providers;
 
 use AutoMapperPlus\CustomMapper\CustomMapper;
+use Illuminate\Support\Collection;
 use Orchestra\Testbench\TestCase;
 use Skraeda\AutoMapper\AutoMapper;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
@@ -48,6 +49,19 @@ class AutoMapperServiceProviderTest extends TestCase
     {
         $target = AutoMapperFacade::map($this->getSourceClass(), get_class($this->getTargetClass()));
         $this->assertEquals('foo', $target->a);
+    }
+
+    /** @test */
+    public function itAddsCollectionAutoMapMacro()
+    {
+        $coll = Collection::make([1]);
+        $target = 'Skraeda\Target';
+        $context = [];
+        AutoMapperFacade::shouldReceive('mapMultiple')
+                        ->once()
+                        ->with($coll, $target, $context)
+                        ->andReturn(Collection::make([true]));
+        $this->assertTrue($coll->autoMap($target, $context)[0]);
     }
 
     /**
