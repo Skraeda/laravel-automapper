@@ -164,7 +164,8 @@ You can use the `autoMap` method on a collection to map into some target class.
 ```php
 use Illuminate\Support\Collection;
 
-$dtos = Collection::make([new Employee("John", "Doe", 1980), new Employee("Jane", "Doe", 1985)])->autoMap(EmployeeDto::class);
+$employees = Collection::make([new Employee("John", "Doe", 1980), new Employee("Jane", "Doe", 1985)]);
+$dtos = $employees->autoMap(EmployeeDto::class);
 ```
 
 ### Generator command
