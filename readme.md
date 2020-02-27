@@ -1,4 +1,7 @@
 # Laravel AutoMapper
+![Version Badge](https://img.shields.io/packagist/v/skraeda/laravel-automapper)
+![License Badge](https://img.shields.io/github/license/Skraeda/laravel-automapper?color=1f59c4)
+
 This package integrates [AutoMapper+](https://github.com/mark-gerarts/automapper-plus) by Mark Gerarts into Laravel.
 
 This documentation will assume you are familiar with how `AutoMapper+` works.
