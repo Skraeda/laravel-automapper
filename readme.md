@@ -222,3 +222,14 @@ Alternatively
 ```
 composer test:coverage
 ```
+
+### Run static analysis
+```
+vendor/bin/phpstan analyse -l 1 src tests
+```
+
+Alternatively
+
+```
+composer stan
+```
