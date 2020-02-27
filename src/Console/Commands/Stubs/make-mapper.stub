@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Mappings;
+
+use AutoMapperPlus\CustomMapper\CustomMapper;
+
+class DummyClass extends CustomMapper
+{
+    /**
+     * Map properties of source to destination.
+     *
+     * @param array|object $source
+     * @param object $destination
+     * @param array $context
+     * @return mixed
+     */
+    public function mapToObject($source, $destination, array $context = [])
+    {
+        return $destination;
+    }
+}
