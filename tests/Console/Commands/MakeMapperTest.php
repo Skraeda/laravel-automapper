@@ -15,7 +15,12 @@ class MakeMapperTest extends TestCase
 {
     public function testCommand()
     {
-        $this->assertEquals(0, $this->artisan('make:mapper', ['name' => 'MyMapper']));
+        $response = $this->artisan('make:mapper', ['name' => 'MyMapper']);
+        if (is_int($response)) {
+            $this->assertEquals(0, $response);
+        } else {
+            $response->assertExitCode(0);
+        }
     }
 
     /**
