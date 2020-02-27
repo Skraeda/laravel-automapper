@@ -1,7 +1,7 @@
 # Laravel AutoMapper
 This package integrates [AutoMapper+](https://github.com/mark-gerarts/automapper-plus) by Mark Gerarts into Laravel.
 
-This documentation will assume you are familiar with how AutoMapper+ works.
+This documentation will assume you are familiar with how `AutoMapper+` works.
 
 ## Installation
 Install via composer:
@@ -97,7 +97,7 @@ $john = auto_map($dto, Employee::class);
 ```
 
 ## Custom Mappers
-AutoMapper+ allows us to define separate classes to perform the mapping if it requires more complicated logic or if we need better performance.
+`AutoMapper+` allows us to define separate classes to perform the mapping if it requires more complicated logic or if we need better performance.
 
 Let's change `EmployeeDto` to look like this instead
 
@@ -111,7 +111,7 @@ class EmployeeDto
     public function setAge($age) { $this->age = $age; }
 }
 ```
-To teach the AutoMapper+ how to use a Custom Mapper to map to the new `EmployeeDto` model then delete the old mapping and create a new custom mapper.
+To teach the `AutoMapper+` how to use a custom mapper to map to the new `EmployeeDto` model then delete the old mapping and create a new custom mapper.
 
 ```php
 namespace App\Mappings;
@@ -159,7 +159,7 @@ Register custom mappers
 
 ## Helpers and methods
 ### Collection macro
-You can use `autoMap` on a collection to map into some target class.
+You can use the `autoMap` method on a collection to map into some target class.
 
 ```php
 use Illuminate\Support\Collection;
@@ -168,7 +168,7 @@ $dtos = Collection::make([new Employee("John", "Doe", 1980), new Employee("Jane"
 ```
 
 ### Generator command
-You can use `make:mapper` artisan command to generate the boilercode for a custom mapper.
+You can use the `make:mapper` artisan command to generate the boilercode for a custom mapper.
 
 ```
 php artisan make:mapper EmployeeToDtoMapper
@@ -205,7 +205,7 @@ function auto_map_multiple($collection, string $targetClass, array $context = []
 vendor/bin/phpunit
 ```
 
-or
+Alternatively
 
 ```
 composer test
@@ -216,7 +216,7 @@ composer test
 vendor/bin/phpunit --coverage-html=coverage --log-junit coverage/report.xml
 ```
 
-or
+Alternatively
 
 ```
 composer test:coverage
