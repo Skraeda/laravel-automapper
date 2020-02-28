@@ -1,4 +1,5 @@
 # Laravel AutoMapper
+![CircleCI](https://img.shields.io/circleci/build/github/Skraeda/laravel-automapper)
 ![Version Badge](https://img.shields.io/packagist/v/skraeda/laravel-automapper)
 ![License Badge](https://img.shields.io/github/license/Skraeda/laravel-automapper?color=1f59c4)
 
