@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea574339eb5fcf4197533e576777ca80",
+    "content-hash": "7942c589080670a3efb64832c47699c1",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -525,23 +525,22 @@
         },
         {
             "name": "mark-gerarts/auto-mapper-plus",
-            "version": "1.3.9",
+            "version": "2.0.0-alpha1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mark-gerarts/automapper-plus.git",
-                "reference": "a74b074d99a5483139ea9e52fd94fdaf9623cd03"
+                "reference": "f3456d636a4dcf8c43c6aa57d0e52e8ce228edfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mark-gerarts/automapper-plus/zipball/a74b074d99a5483139ea9e52fd94fdaf9623cd03",
-                "reference": "a74b074d99a5483139ea9e52fd94fdaf9623cd03",
+                "url": "https://api.github.com/repos/mark-gerarts/automapper-plus/zipball/f3456d636a4dcf8c43c6aa57d0e52e8ce228edfe",
+                "reference": "f3456d636a4dcf8c43c6aa57d0e52e8ce228edfe",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1.0"
             },
             "require-dev": {
-                "mark-gerarts/phpstan-automapper-plus": "^0.1.0",
                 "phpunit/phpunit": "^6.4",
                 "symfony/debug": "^3.3",
                 "symfony/var-dumper": "^3.3"
@@ -568,7 +567,7 @@
                 "converter",
                 "object-to-object"
             ],
-            "time": "2020-02-27T16:24:32+00:00"
+            "time": "2019-03-17T12:26:49+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4378,7 +4377,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "mark-gerarts/auto-mapper-plus": 15
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

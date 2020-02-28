@@ -107,7 +107,7 @@ class AutoMapperServiceProviderTest extends TestCase
         if ($this->mappingClass === null) {
             $this->mappingClass = new class extends CustomMapper
             {
-                public function mapToObject($source, $destination)
+                public function mapToObject($source, $destination, array $ctx = [])
                 {
                     $destination->a = $source->a;
                     return $destination;
