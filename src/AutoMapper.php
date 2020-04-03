@@ -33,7 +33,7 @@ class AutoMapper implements AutoMapperContract
     /**
      * {@inheritDoc}
      */
-    public function map($source, string $targetClass, array $context = [])
+    public function map($source, $targetClass, array $context = [])
     {
         return $this->mapper->map($source, $targetClass, $context);
     }
@@ -43,7 +43,7 @@ class AutoMapper implements AutoMapperContract
      */
     public function mapToObject($source, $target, array $context = [])
     {
-        return $this->mapper->mapToObject($source, $target, $context);
+        return $this->mapper->map($source, $target, $context);
     }
 
     /**

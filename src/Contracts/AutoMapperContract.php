@@ -16,12 +16,12 @@ interface AutoMapperContract
      * Map a source to a target class.
      *
      * @param array|object $source
-     * @param string $targetClass
+     * @param string|object $targetClass
      * @param array $context
      * @return mixed
      * @throws \AutoMapperPlus\Exception\UnregisteredMappingException
      */
-    public function map($source, string $targetClass, array $context = []);
+    public function map($source, $targetClass, array $context = []);
 
     /**
      * Map a source to an existing object.
@@ -31,6 +31,7 @@ interface AutoMapperContract
      * @param array $context
      * @return mixed
      * @throws \AutoMapperPlus\Exception\UnregisteredMappingException
+     * @deprecated The `map` method should now be used instead.
      */
     public function mapToObject($source, $target, array $context = []);
 
