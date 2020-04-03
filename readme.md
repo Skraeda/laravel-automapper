@@ -181,7 +181,7 @@ php artisan make:mapper EmployeeToDtoMapper
 
 ### AutoMapperContract
 ```php
-public function map($source, string $targetClass, array $context = []);
+public function map($source, $targetClass, array $context = []);
 public function mapToObject($source, $target, array $context = []);
 public function mapMultiple($collection, string $targetClass, array $context = []): \Illuminate\Support\Collection;
 public function getConfiguration(): \AutoMapperPlus\Configuration\AutoMapperConfigInterface;
@@ -190,7 +190,7 @@ public function getConfiguration(): \AutoMapperPlus\Configuration\AutoMapperConf
 ### AutoMapperFacade
 ```php
 /**
- * @method static mixed map($source, string $targetClass, array $context)
+ * @method static mixed map($source, $targetClass, array $context)
  * @method static mixed mapToObject($source, $target, array $context)
  * @method static \Illuminate\Support\Collection mapMultiple($collection, string $targetClass, array $context)
  * @method static \AutoMapperPlus\Configuration\AutoMapperConfigInterface getConfiguration()
@@ -199,7 +199,7 @@ public function getConfiguration(): \AutoMapperPlus\Configuration\AutoMapperConf
 
 ### Helper functions
 ```php
-function auto_map($source, string $targetClass, array $context = []);
+function auto_map($source, $targetClass, array $context = []);
 function auto_map_to_object($source, $target, array $context = []);
 function auto_map_multiple($collection, string $targetClass, array $context = []): \Illuminate\Support\Collection;
 ```

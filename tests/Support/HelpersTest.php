@@ -60,7 +60,7 @@ class HelpersTest extends TestCase
         $source = 'Skraeda/Source';
         $target = (object) ['Foo' => 'Bar'];
         $context = [];
-        AutoMapperFacade::shouldReceive('mapToObject')->once()->with($source, $target, $context)->andReturn(true);
+        AutoMapperFacade::shouldReceive('map')->once()->with($source, $target, $context)->andReturn(true);
         $this->assertTrue(auto_map_to_object($source, $target, $context));
     }
 }

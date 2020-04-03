@@ -8,12 +8,12 @@ if (!function_exists('auto_map')) {
      * Map a source to a target class.
      *
      * @param array|object $source
-     * @param string $targetClass
+     * @param string|object $targetClass
      * @param array $context
      * @return mixed
      * @throws \AutoMapperPlus\Exception\UnregisteredMappingException
      */
-    function auto_map($source, string $targetClass, array $context = [])
+    function auto_map($source, $targetClass, array $context = [])
     {
         return AutoMapperFacade::map($source, $targetClass, $context);
     }
@@ -31,7 +31,7 @@ if (!function_exists('auto_map_to_object')) {
      */
     function auto_map_to_object($source, $target, array $context = [])
     {
-        return AutoMapperFacade::mapToObject($source, $target, $context);
+        return AutoMapperFacade::map($source, $target, $context);
     }
 }
 
