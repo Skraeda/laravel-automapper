@@ -5,14 +5,18 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/app
     docker:
       # Specify the version you desire here
       - image: circleci/php:7.1-node-browsers
     steps:
       - checkout
 
-      - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-      - run: sudo docker-php-ext-install zip
+      - run:
+          name: Install prerequisites
+          command: |
+            sudo apt update
+            sudo docker-php-ext-install zip
 
       # Download and cache dependencies
       - restore_cache:
@@ -22,7 +26,9 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: composer install -n --prefer-dist
+      - run:
+          name: Install Composer vendors
+          command: composer install -n --prefer-dist
 
       - save_cache:
           key: v1-dependencies-{{ checksum "composer.json" }}
@@ -30,4 +36,10 @@ jobs:
             - ./vendor
 
       # run tests with phpunit or codecept
-      - run: ./vendor/bin/phpunit
+      - run:
+          name: Run PHPUnit
+          command: ~/app/vendor/bin/phpunit --coverage-html ~/app/coverage --log-junit ~/app/coverage/junit.xml
+      - store_test_results:
+          path: ~/app/coverage
+      - store_artifacts:
+          path: ~/app/coverage
