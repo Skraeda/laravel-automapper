@@ -35,7 +35,6 @@ jobs:
           paths:
             - ./vendor
 
-      # run tests with phpunit or codecept
       - run:
           name: Run PHPUnit
           command: ~/app/vendor/bin/phpunit --coverage-html ~/app/coverage --log-junit ~/app/coverage/junit.xml
@@ -43,3 +42,7 @@ jobs:
           path: ~/app/coverage
       - store_artifacts:
           path: ~/app/coverage
+
+      - run:
+          name: Run Codecov
+          command: bash <(curl -s https://codecov.io/bash)
