@@ -57,7 +57,7 @@ namespace App\Providers;
 use App\Models\Employee;
 use App\Models\EmployeeDto;
 use Illuminate\Support\ServiceProvider;
-use AutoMapper;
+use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade as AutoMapper;;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -79,8 +79,7 @@ class AppServiceProvider extends ServiceProvider
 ### Mapping between the models
 Using the facade or alias
 ```php
-// use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade as AutoMapper
-use AutoMapper;
+use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade as AutoMapper
 
 $dto = AutoMapper::map(new Employee("John", "Doe", 1980), EmployeeDto::class);
 $john = AutoMapper::map($dto, Employee::class);
