@@ -52,4 +52,14 @@ interface AutoMapperContract
      * @return \AutoMapperPlus\Configuration\AutoMapperConfigInterface
      */
     public function getConfiguration(): AutoMapperConfigInterface;
+
+    /**
+     * Register a Custom Mapper
+     *
+     * @param string $mapper
+     * @param string $source
+     * @param string $target
+     * @return void
+     */
+    public function registerCustomMapper(string $mapper, string $source, string $target): void;
 }

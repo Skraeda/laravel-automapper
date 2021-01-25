@@ -4,6 +4,8 @@ namespace Skraeda\AutoMapper\Tests;
 
 use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Configuration\MappingInterface;
+use AutoMapperPlus\MapperInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Skraeda\AutoMapper\AutoMapper;
@@ -64,5 +66,25 @@ class AutoMapperTest extends TestCase
         $configMock = Mockery::mock(AutoMapperConfigInterface::class);
         $this->mapper->shouldReceive('getConfiguration')->andReturn($configMock);
         $this->assertEquals($configMock, (new AutoMapper($this->mapper))->getConfiguration());
+    }
+
+    public function testRegisterCustomMapper()
+    {
+        $source = 'ClassnameA';
+        $target = 'ClassnameB';
+        $mapper = new class implements MapperInterface {
+            public string $test = 'test';
+
+            public function map($source, $target, array $context = [])
+            {
+                return '';
+            }
+        };
+        $configMock = Mockery::mock(AutoMapperConfigInterface::class);
+        $mappingMock = Mockery::mock(MappingInterface::class);
+        $this->mapper->shouldReceive('getConfiguration')->andReturn($configMock);
+        $configMock->shouldReceive('registerMapping')->with($source, $target)->andReturn($mappingMock);
+        $mappingMock->shouldReceive('useCustomMapper')->with(Mockery::on(fn ($o) => $o->test === 'test'));
+        $this->assertNull((new AutoMapper($this->mapper))->registerCustomMapper(get_class($mapper), $source, $target));
     }
 }

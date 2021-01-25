@@ -105,8 +105,7 @@ class AutoMapperServiceProviderTest extends TestCase
     protected function getMappingClass()
     {
         if ($this->mappingClass === null) {
-            $this->mappingClass = new class extends CustomMapper
-            {
+            $this->mappingClass = new class extends CustomMapper {
                 public function mapToObject($source, $destination, array $ctx = [])
                 {
                     $destination->a = $source->a;
@@ -126,8 +125,7 @@ class AutoMapperServiceProviderTest extends TestCase
     protected function getSourceClass()
     {
         if ($this->sourceClass === null) {
-            $this->sourceClass = new class
-            {
+            $this->sourceClass = new class {
                 public $a = 'foo';
             };
         }
@@ -143,8 +141,7 @@ class AutoMapperServiceProviderTest extends TestCase
     protected function getTargetClass()
     {
         if ($this->targetClass === null) {
-            $this->targetClass = new class
-            {
+            $this->targetClass = new class {
                 public $a;
             };
         }
