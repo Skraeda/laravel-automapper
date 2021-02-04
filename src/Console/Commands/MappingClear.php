@@ -6,11 +6,11 @@ use Illuminate\Console\Command;
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 
 /**
- * Make Mapper generator command.
+ * Clear Mapping cache command.
  *
  * @author Gunnar Örn Baldursson <gunnar@sjukraskra.is>
  */
-class MakeMapper extends Command
+class MappingClear extends Command
 {
     /**
      * The name and signature of the console command.
