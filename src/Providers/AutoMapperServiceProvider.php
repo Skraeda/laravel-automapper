@@ -88,9 +88,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
         }
 
         foreach ($mappings as $mapper => $ctx) {
-            [$source, $target] = $ctx;
-
-            $operator->registerCustomMapper($mapper, $source, $target);
+            $operator->registerCustomMapper($mapper, $ctx['source'], $ctx['target']);
         }
 
         if (config('mapping.cache.enabled') && !$cacheHit) {

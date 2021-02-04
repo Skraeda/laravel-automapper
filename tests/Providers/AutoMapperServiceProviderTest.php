@@ -4,11 +4,14 @@ namespace Skraeda\AutoMapper\Tests\Providers;
 
 use AutoMapperPlus\CustomMapper\CustomMapper;
 use Illuminate\Support\Collection;
+use Mockery;
 use Orchestra\Testbench\TestCase;
 use Skraeda\AutoMapper\AutoMapper;
+use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 use Skraeda\AutoMapper\Providers\AutoMapperServiceProvider;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
+use Skraeda\AutoMapper\Contracts\AutoMapperOperatorContract;
 
 /**
  * Feature tests for \Skraeda\AutoMapper\Providers\AutoMapperServiceProvider
@@ -89,10 +92,21 @@ class AutoMapperServiceProviderTest extends TestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $app['config']->set('mapping.custom', [
-            get_class($this->getMappingClass()) => [
-                'source' => get_class($this->getSourceClass()),
-                'target' => get_class($this->getTargetClass())
+        $app['config']->set('mapping', [
+            'custom' => [
+                get_class($this->getMappingClass()) => [
+                    'source' => get_class($this->getSourceClass()),
+                    'target' => get_class($this->getTargetClass())
+                ]
+            ],
+            'scan' => [
+                'enabled' => false,
+                'dirs' => []
+            ],
+            'cache' => [
+                'enabled' => false,
+                'dir' => __DIR__,
+                'key' => 'test.php'
             ]
         ]);
     }
