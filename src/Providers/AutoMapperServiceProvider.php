@@ -47,9 +47,9 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
 
         $this->registerCommands();
 
-        $this->registerCustomMappers();
-
         $this->addCollectionMacro();
+
+        $this->registerCustomMappers();
 
         $this->scanForMappers();
     }
@@ -57,7 +57,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
     /**
      * Register Custom Mappers defined in custom key in config.
      *
-     * @return void
+     * @return array
      */
     protected function registerCustomMappers()
     {
@@ -97,7 +97,11 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      */
     protected function scanForMappers()
     {
-        $appPaths = array_map(fn ($path) => app_path().DIRECTORY_SEPARATOR.$path, config('mapping.scan'));
+        if (!config('mapping.scan.enabled', false)) {
+            return;
+        }
+
+        $appPaths = array_map(fn ($path) => app_path().DIRECTORY_SEPARATOR.$path, config('mapping.scan.dirs', []));
 
         $paths = array_filter(array_unique($appPaths), fn ($path) => is_dir($path));
 
