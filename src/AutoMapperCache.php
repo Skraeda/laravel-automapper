@@ -176,8 +176,8 @@ class AutoMapperCache implements AutoMapperCacheContract
      */
     protected function validateKey($key): void
     {
-        if (!is_string($key) || !str_ends_with('.php', $key)) {
-            throw new AutoMapperCacheException("$key must be a .php file path string");
+        if (!is_string($key) || !str_ends_with($key, '.php')) {
+            throw new AutoMapperCacheException("Key must be a .php file path string");
         }
     }
 

@@ -4,14 +4,13 @@ namespace Skraeda\AutoMapper\Tests\Providers;
 
 use AutoMapperPlus\CustomMapper\CustomMapper;
 use Illuminate\Support\Collection;
-use Mockery;
 use Orchestra\Testbench\TestCase;
 use Skraeda\AutoMapper\AutoMapper;
-use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 use Skraeda\AutoMapper\Providers\AutoMapperServiceProvider;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
-use Skraeda\AutoMapper\Contracts\AutoMapperOperatorContract;
+use Skraeda\AutoMapper\Tests\Data\A;
+use Skraeda\AutoMapper\Tests\Data\B;
 
 /**
  * Feature tests for \Skraeda\AutoMapper\Providers\AutoMapperServiceProvider
@@ -41,20 +40,29 @@ class AutoMapperServiceProviderTest extends TestCase
      */
     protected $targetClass;
 
-    /** @test */
+    /**
+     * @test
+     * @environment-setup useDefault
+     **/
     public function itRegistersAnAutoMapper()
     {
         $this->assertInstanceOf(AutoMapper::class, $this->app[AutoMapperContract::class]);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @environment-setup useCustomClasses
+     **/
     public function itRegistersCustomMappings()
     {
         $target = AutoMapperFacade::map($this->getSourceClass(), get_class($this->getTargetClass()));
         $this->assertEquals('foo', $target->a);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @environment-setup useDefault
+     **/
     public function itAddsCollectionAutoMapMacro()
     {
         $coll = Collection::make([1]);
@@ -65,6 +73,15 @@ class AutoMapperServiceProviderTest extends TestCase
                         ->with($coll, $target, $context)
                         ->andReturn(Collection::make([true]));
         $this->assertTrue($coll->autoMap($target, $context)[0]);
+    }
+
+    /**
+     * @test
+     * @environment-setup useCache
+     */
+    public function itRegistersCachedMappersIfTheyExist()
+    {
+        $this->assertEquals(2, AutoMapperFacade::map(new A, B::class)->Value);
     }
 
     /**
@@ -88,9 +105,34 @@ class AutoMapperServiceProviderTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
+     * Default environment
+     *
+     * @param \Illuminate\Foundation\Application $app
+     * @return void
      */
-    protected function getEnvironmentSetUp($app)
+    protected function useDefaults($app)
+    {
+        $app['config']->set('mapping', [
+            'custom' => [],
+            'scan' => [
+                'enabled' => false,
+                'dirs' => []
+            ],
+            'cache' => [
+                'enabled' => false,
+                'dir' => '/var/www/app/storage/framework/automapper',
+                'key' => 'automapper.php'
+            ]
+        ]);
+    }
+
+    /**
+     * Environment with Custom classes
+     *
+     * @param \Illuminate\Foundation\Application $app
+     * @return void
+     */
+    protected function useCustomClasses($app)
     {
         $app['config']->set('mapping', [
             'custom' => [
@@ -105,8 +147,52 @@ class AutoMapperServiceProviderTest extends TestCase
             ],
             'cache' => [
                 'enabled' => false,
-                'dir' => __DIR__,
-                'key' => 'test.php'
+                'dir' => '/var/www/app/storage/framework/automapper',
+                'key' => 'automapper.php'
+            ]
+        ]);
+    }
+
+    /**
+     * Environment with Cache
+     *
+     * @param \Illuminate\Foundation\Application $app
+     * @return void
+     */
+    protected function useCache($app)
+    {
+        $app['config']->set('mapping', [
+            'custom' => [],
+            'scan' => [
+                'enabled' => false,
+                'dirs' => []
+            ],
+            'cache' => [
+                'enabled' => true,
+                'dir' => realpath(implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'cache'])),
+                'key' => 'automapper.php'
+            ]
+        ]);
+    }
+
+    /**
+     * Environment with Directory Scan
+     *
+     * @param \Illuminate\Foundation\Application $app
+     * @return void
+     */
+    protected function useScan($app)
+    {
+        $app['config']->set('mapping', [
+            'custom' => [],
+            'scan' => [
+                'enabled' => true,
+                'dirs' => []
+            ],
+            'cache' => [
+                'enabled' => false,
+                'dir' => '/var/www/app/storage/framework/automapper',
+                'key' => 'automapper.php'
             ]
         ]);
     }
