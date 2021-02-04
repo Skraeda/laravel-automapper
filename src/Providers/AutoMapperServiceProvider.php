@@ -3,12 +3,9 @@
 namespace Skraeda\AutoMapper\Providers;
 
 use AutoMapperPlus\AutoMapper as AutoMapperPlusAutoMapper;
-use AutoMapperPlus\MapperInterface;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
-use Illuminate\Support\Str;
-use ReflectionClass;
-use Skraeda\AutoMapper\Attributes\Maps;
 use Skraeda\AutoMapper\AutoMapper;
 use Skraeda\AutoMapper\AutoMapperCache;
 use Skraeda\AutoMapper\AutoMapperOperator;
@@ -17,7 +14,6 @@ use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
 use Skraeda\AutoMapper\Contracts\AutoMapperOperatorContract;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
-use Symfony\Component\Finder\Finder;
 
 /**
  * AutoMapper service provider.
@@ -33,11 +29,16 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(AutoMapperContract::class, fn () => new AutoMapper(new AutoMapperPlusAutoMapper));
+        $this->app->singleton(AutoMapperContract::class, fn () => new AutoMapper(
+            new AutoMapperPlusAutoMapper
+        ));
 
         $this->app->bind(AutoMapperOperatorContract::class, fn () => new AutoMapperOperator);
 
-        // $this->app->bind(AutoMapperCacheContract::class, fn () => new AutoMapperCache);
+        $this->app->bind(AutoMapperCacheContract::class, fn () => new AutoMapperCache(
+            app(Filesystem::class),
+            config('mapping.cache.dir')
+        ));
 
         $this->mergeConfigFrom(__DIR__.'/../../config/mapping.php', 'mapping');
     }
@@ -51,25 +52,50 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
     {
         $this->publishes([__DIR__.'/../../config/mapping.php' => config_path('mapping.php')]);
 
-        $this->registerCommands();
+        $this->addCommands();
 
         $this->addCollectionMacro();
 
-        $this->registerCustomMappers();
+        $this->addCustomMappers();
     }
 
     /**
-     * Register Custom Mappers defined in custom key in config.
+     * Register Custom Mappers defined via config.
      *
      * @return void
      */
-    protected function registerCustomMappers()
+    protected function addCustomMappers()
     {
-        // If cache, register from cache
+        $cache = app(AutoMapperCacheContract::class);
+        $operator = app(AutoMapperOperatorContract::class);
 
-        $this->registerNewMappings();
+        $cacheKey = config('mapping.cache.key');
+        $cacheHit = false;
 
-        // If cache, save to cache
+        $mappings = [];
+
+        if (config('mapping.cache.enabled') && $cache->has($cacheKey)) {
+            $mappings = $cache->get($cacheKey);
+            $cacheHit = true;
+        } else {
+            $mappings = config('mapping.custom', []);
+
+            if (config('mapping.scan.enabled')) {
+                $scan = $operator->scanMappingDirectory(config('mapping.scan.dirs', []));
+
+                $mappings = array_merge($mappings, $scan);
+            }
+        }
+
+        foreach ($mappings as $mapper => $ctx) {
+            [$source, $target] = $ctx;
+
+            $operator->registerCustomMapper($mapper, $source, $target);
+        }
+
+        if (config('mapping.cache.enabled') && !$cacheHit) {
+            $cache->set($cacheKey, $mappings);
+        }
     }
 
     /**
@@ -89,31 +115,10 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      *
      * @return void
      */
-    protected function registerCommands()
+    protected function addCommands()
     {
         if ($this->app->runningInConsole()) {
             $this->commands([MakeMapper::class]);
         }
-    }
-
-    /**
-     * Register new mappings found through config.
-     *
-     * @return array
-     */
-    protected function registerNewMappings(): array
-    {
-        $operator = app(AutoMapperOperatorContract::class);
-
-        $customMappers = array_merge(
-            config('mapping.custom', []),
-            config('mapping.scan.enabled') ? $operator->scanMappingDirectory(config('mapping.scan.dirs', [])) : []
-        );
-
-        foreach ($customMappers as $mapper => $classes) {
-            $operator->registerCustomMapper($mapper, $classes['source'], $classes['target']);
-        }
-
-        return $customMappers;
     }
 }

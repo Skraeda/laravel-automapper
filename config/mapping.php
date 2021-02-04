@@ -44,7 +44,13 @@
      | web server. This should be enabled for a slight performance boost.
      */
     'cache' => [
-        // File path to store mappers, only file system cache available.
-        'key' => env('AUTO_MAPPER_CACHE_KEY', storage_path('app/framework/automapper.php'))
+        // Determine if mappings should be cached
+        'enabled' => env('AUTO_MAPPER_CACHE', false),
+        
+        // Directory to store cached mappers.
+        'dir' => env('AUTO_MAPPER_CACHE_DIR', storage_path('app/framework/automapper')),
+
+        // Default cache key for mappings
+        'key' => env('AUTO_MAPPER_CACHE_KEY', 'automapper.php')
     ]
 ];

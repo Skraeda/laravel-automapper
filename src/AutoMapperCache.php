@@ -2,10 +2,10 @@
 
 namespace Skraeda\AutoMapper;
 
+use Illuminate\Filesystem\Filesystem;
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Exceptions\AutoMapperCacheException;
 use Throwable;
-use Illuminate\Filesystem\Filesystem;
 
 /**
  * AutoMapperCache implementation using filesystem
