@@ -10,27 +10,27 @@ namespace Skraeda\AutoMapper\Contracts;
 interface AutoMapperCacheContract
 {
     /**
-     * Load mapping config from a file
+     * Load mapping config
      *
-     * @param string $file
+     * @param string $key
      * @return array
      */
-    public function load(string $file): array;
+    public function load(string $key): array;
 
     /**
-     * Save mapping config to a file
+     * Save mapping config
      *
      * @param array $mappings
-     * @param string $file
+     * @param string $key
      * @return void
      */
-    public function save(array $mappings, string $file): void;
+    public function save(array $mappings, string $key): void;
 
     /**
-     * Clear mappin config file
+     * Clear mapping config
      *
-     * @param string $file
+     * @param string $key
      * @return void
      */
-    public function clear(string $file): void;
+    public function clear(string $key): void;
 }

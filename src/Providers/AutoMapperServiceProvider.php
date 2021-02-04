@@ -10,8 +10,12 @@ use Illuminate\Support\Str;
 use ReflectionClass;
 use Skraeda\AutoMapper\Attributes\Maps;
 use Skraeda\AutoMapper\AutoMapper;
+use Skraeda\AutoMapper\AutoMapperCache;
+use Skraeda\AutoMapper\AutoMapperOperator;
 use Skraeda\AutoMapper\Console\Commands\MakeMapper;
+use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
+use Skraeda\AutoMapper\Contracts\AutoMapperOperatorContract;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 use Symfony\Component\Finder\Finder;
 
@@ -29,9 +33,11 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(AutoMapperContract::class, function () {
-            return new AutoMapper(new AutoMapperPlusAutoMapper);
-        });
+        $this->app->singleton(AutoMapperContract::class, fn () => new AutoMapper(new AutoMapperPlusAutoMapper));
+
+        $this->app->bind(AutoMapperOperatorContract::class, fn () => new AutoMapperOperator);
+
+        $this->app->bind(AutoMapperCacheContract::class, fn () => new AutoMapperCache);
 
         $this->mergeConfigFrom(__DIR__.'/../../config/mapping.php', 'mapping');
     }

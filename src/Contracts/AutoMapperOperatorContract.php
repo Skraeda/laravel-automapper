@@ -13,17 +13,17 @@ interface AutoMapperOperatorContract
      * Register a Custom Mapper
      *
      * @param string $mapperClass
-     * @param string $sourceCkass
+     * @param string $sourceClass
      * @param string $targetClass
-     * @return self
+     * @return void
      */
-    public function registerCustomMapper(string $mapperClass, string $sourceCkass, string $targetClass): self;
+    public function registerCustomMapper(string $mapperClass, string $sourceClass, string $targetClass): void;
 
     /**
      * Scan a directory for Custom Mappers
      *
-     * @param string $dir
-     * @return self
+     * @param string|array $dirs
+     * @return array
      */
-    public function scanMappingDirectory(string $dir): array;
+    public function scanMappingDirectory(string|array $dir): array;
 }
