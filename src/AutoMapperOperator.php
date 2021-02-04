@@ -7,8 +7,10 @@ use Illuminate\Support\Str;
 use ReflectionClass;
 use Skraeda\AutoMapper\Attributes\Maps;
 use Skraeda\AutoMapper\Contracts\AutoMapperOperatorContract;
+use Skraeda\AutoMapper\Exceptions\AutoMapperOperatorException;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 use Symfony\Component\Finder\Finder;
+use Throwable;
 
 /**
  * AutoMapperOperator implementation
@@ -45,16 +47,22 @@ class AutoMapperOperator implements AutoMapperOperatorContract
 
     /**
      * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperOperatorException
      */
     public function registerCustomMapper(string $mapperClass, string $sourceClass, string $targetClass): void
     {
-        AutoMapperFacade::getConfiguration()
-            ->registerMapping($sourceClass, $targetClass)
-            ->useCustomMapper(new $mapperClass);
+        try {
+            AutoMapperFacade::getConfiguration()
+                ->registerMapping($sourceClass, $targetClass)
+                ->useCustomMapper(new $mapperClass);
+        } catch (Throwable $e) {
+            throw new AutoMapperOperatorException("Failed to register mapping for $mapperClass: " . $e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
      * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperOperatorException
      */
     public function scanMappingDirectory(string|array $dirs): array
     {
@@ -71,15 +79,19 @@ class AutoMapperOperator implements AutoMapperOperatorContract
                 Str::after($mapping->getRealPath(), realpath($this->path).DIRECTORY_SEPARATOR)
             );
 
-            $refl = new ReflectionClass($mapper);
-            $attributes = $refl->getAttributes(Maps::class);
-
-            foreach ($attributes as $attribute) {
-                if ($refl->isInstantiable() && $refl->implementsInterface(MapperInterface::class)) {
-                    $maps = $attribute->newInstance();
-                        
-                    $mappers[$mapper] = [ 'source' => $maps->source, 'target' => $maps->target ];
+            try {
+                $refl = new ReflectionClass($mapper);
+                $attributes = $refl->getAttributes(Maps::class);
+    
+                foreach ($attributes as $attribute) {
+                    if ($refl->isInstantiable() && $refl->implementsInterface(MapperInterface::class)) {
+                        $maps = $attribute->newInstance();
+                            
+                        $mappers[$mapper] = [ 'source' => $maps->source, 'target' => $maps->target ];
+                    }
                 }
+            } catch (Throwable $e) {
+                throw new AutoMapperOperatorException("Failed to register mapping for $mapper: " . $e->getMessage(), $e->getCode(), $e);
             }
         }
 

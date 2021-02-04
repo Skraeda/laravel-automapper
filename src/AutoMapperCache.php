@@ -3,6 +3,7 @@
 namespace Skraeda\AutoMapper;
 
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
+use Skraeda\AutoMapper\Exceptions\AutoMapperCacheException;
 
 /**
  * AutoMapperCache implementation using filesystem
@@ -11,25 +12,35 @@ use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
  */
 class AutoMapperCache implements AutoMapperCacheContract
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function save(array $mappings, string $key): void
+    public function get($key, $default = null)
     {
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function load(string $key): array
-    {
-        return [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function clear(string $key): void
+    public function set($key, $value, $ttl = null)
+    {
+    }
+
+    public function delete($key)
+    {
+    }
+
+    public function clear()
+    {
+    }
+
+    public function has($key)
+    {
+    }
+
+    public function getMultiple($keys, $default = null)
+    {
+    }
+
+    public function setMultiple($values, $ttl = null)
+    {
+    }
+
+    public function deleteMultiple($keys)
     {
     }
 }

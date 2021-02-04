@@ -37,7 +37,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
 
         $this->app->bind(AutoMapperOperatorContract::class, fn () => new AutoMapperOperator);
 
-        $this->app->bind(AutoMapperCacheContract::class, fn () => new AutoMapperCache);
+        // $this->app->bind(AutoMapperCacheContract::class, fn () => new AutoMapperCache);
 
         $this->mergeConfigFrom(__DIR__.'/../../config/mapping.php', 'mapping');
     }
@@ -56,20 +56,20 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
         $this->addCollectionMacro();
 
         $this->registerCustomMappers();
-
-        $this->scanForMappers();
     }
 
     /**
      * Register Custom Mappers defined in custom key in config.
      *
-     * @return array
+     * @return void
      */
     protected function registerCustomMappers()
     {
-        foreach (config('mapping.custom') as $mapper => $classes) {
-            AutoMapperFacade::registerCustomMapper($mapper, $classes['source'], $classes['target']);
-        }
+        // If cache, register from cache
+
+        $this->registerNewMappings();
+
+        // If cache, save to cache
     }
 
     /**
@@ -97,43 +97,23 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
     }
 
     /**
-     * Scan for CustomMappers defined in scan key in config.
+     * Register new mappings found through config.
      *
-     * @return void
+     * @return array
      */
-    protected function scanForMappers()
+    protected function registerNewMappings(): array
     {
-        if (!config('mapping.scan.enabled', false)) {
-            return;
+        $operator = app(AutoMapperOperatorContract::class);
+
+        $customMappers = array_merge(
+            config('mapping.custom', []),
+            config('mapping.scan.enabled') ? $operator->scanMappingDirectory(config('mapping.scan.dirs', [])) : []
+        );
+
+        foreach ($customMappers as $mapper => $classes) {
+            $operator->registerCustomMapper($mapper, $classes['source'], $classes['target']);
         }
 
-        $appPaths = array_map(fn ($path) => app_path().DIRECTORY_SEPARATOR.$path, config('mapping.scan.dirs', []));
-
-        $paths = array_filter(array_unique($appPaths), fn ($path) => is_dir($path));
-
-        if (empty($paths)) {
-            return;
-        }
-
-        $ns = app()->getNamespace();
-
-        foreach ((new Finder)->in($paths)->files() as $mapping) {
-            $mapper = $ns.str_replace(
-                ['/', '.php'],
-                ['\\', ''],
-                Str::after($mapping->getRealPath(), realpath(app_path()).DIRECTORY_SEPARATOR)
-            );
-
-            $refl = new ReflectionClass($mapper);
-            $attributes = $refl->getAttributes(Maps::class);
-
-            foreach ($attributes as $attribute) {
-                if ($refl->isInstantiable() && $refl->implementsInterface(MapperInterface::class)) {
-                    $maps = $attribute->newInstance();
-    
-                    AutoMapperFacade::registerCustomMapper($mapper, $maps->source, $maps->target);
-                }
-            }
-        }
+        return $customMappers;
     }
 }
