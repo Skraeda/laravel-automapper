@@ -24,14 +24,14 @@ class AutoMapperOperator implements AutoMapperOperatorContract
      *
      * @var string
      */
-    protected $namespace;
+    protected string $namespace;
 
     /**
      * Application path
      *
      * @var string
      */
-    protected $path;
+    protected string $path;
 
     /**
      * Constructor
@@ -56,7 +56,7 @@ class AutoMapperOperator implements AutoMapperOperatorContract
                 ->registerMapping($sourceClass, $targetClass)
                 ->useCustomMapper(new $mapperClass);
         } catch (Throwable $e) {
-            throw new AutoMapperOperatorException("Failed to register mapping for $mapperClass: " . $e->getMessage(), $e->getCode(), $e);
+            throw AutoMapperOperatorException::wrap("Failed to register mapping for $mapperClass", $e);
         }
     }
 
@@ -91,7 +91,7 @@ class AutoMapperOperator implements AutoMapperOperatorContract
                     }
                 }
             } catch (Throwable $e) {
-                throw new AutoMapperOperatorException("Failed to register mapping for $mapper: " . $e->getMessage(), $e->getCode(), $e);
+                throw AutoMapperOperatorException::wrap("Failed to register mapping for $mapper", $e);
             }
         }
 

@@ -4,6 +4,8 @@ namespace Skraeda\AutoMapper;
 
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Exceptions\AutoMapperCacheException;
+use Throwable;
+use Illuminate\Filesystem\Filesystem;
 
 /**
  * AutoMapperCache implementation using filesystem
@@ -12,35 +14,183 @@ use Skraeda\AutoMapper\Exceptions\AutoMapperCacheException;
  */
 class AutoMapperCache implements AutoMapperCacheContract
 {
+    /**
+     * Constructor
+     *
+     * @param \Illuminate\Filesystem\Filesystem $fs
+     * @param string $dir
+     */
+    public function __construct(
+        protected Filesystem $fs,
+        protected string $dir
+    ) {
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function get($key, $default = null)
     {
+        $this->validateKey($key);
+
+        $path = $this->keyPath($key);
+
+        if (!$this->fs->exists($path)) {
+            return $default;
+        }
+        
+        try {
+            return require $path;
+        } catch (Throwable $e) {
+            throw AutoMapperCacheException::wrap("Failed to load cache file $key", $e);
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function set($key, $value, $ttl = null)
     {
+        $this->validateKey($key);
+
+        $path = $this->keyPath($key);
+
+        $this->fs->makeDirectory($path, 0755, true, true);
+
+        $this->delete($key);
+
+        $this->fs->put($path, '<?php return '.var_export($value, true).';'.PHP_EOL);
+
+        try {
+            require $path;
+        } catch (Throwable $e) {
+            $this->fs->delete($path);
+
+            throw AutoMapperCacheException::wrap("Mappers failed to serialize to $key", $e);
+        }
+
+        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function delete($key)
     {
+        $this->validateKey($key);
+
+        $path = $this->keyPath($key);
+
+        if ($this->fs->exists($path)) {
+            return $this->fs->delete($path);
+        }
+
+        return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function clear()
     {
+        return $this->fs->cleanDirectory($this->dir);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function has($key)
     {
+        $this->validateKey($key);
+
+        $path = $this->keyPath($key);
+
+        return $this->fs->exists($path);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function getMultiple($keys, $default = null)
     {
+        $this->validateKeyArray($keys);
+
+        $results = [];
+
+        foreach ($keys as $key) {
+            $results[$key] = $this->get($key, $default);
+        }
+
+        return $results;
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function setMultiple($values, $ttl = null)
     {
+        $this->validateKeyArray($values);
+
+        foreach ($values as $key => $value) {
+            $this->set($key, $value, $ttl);
+        }
+
+        return true;
     }
 
     public function deleteMultiple($keys)
     {
+        $this->validateKeyArray($keys);
+
+        foreach ($keys as $key) {
+            if (!$this->delete($key)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Get key path
+     *
+     * @param string $key
+     * @return string
+     */
+    protected function keyPath(string $key): string
+    {
+        return $this->dir.DIRECTORY_SEPARATOR.$key;
+    }
+
+    /**
+     * Validate a cache key is valid.
+     *
+     * @param string $key
+     * @return void
+     */
+    protected function validateKey($key): void
+    {
+        if (!is_string($key) || !str_ends_with('.php', $key)) {
+            throw new AutoMapperCacheException("$key must be a .php file path string");
+        }
+    }
+
+    /**
+     * Validate a cache key array
+     *
+     * @param array|\Traversable $keys
+     * @return void
+     */
+    protected function validateKeyArray($keys): void
+    {
+        if (!is_iterable($keys)) {
+            throw new AutoMapperCacheException("Keys must be iterable");
+        }
     }
 }
