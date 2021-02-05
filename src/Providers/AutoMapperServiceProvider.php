@@ -11,6 +11,7 @@ use Skraeda\AutoMapper\AutoMapperCache;
 use Skraeda\AutoMapper\AutoMapperFinder;
 use Skraeda\AutoMapper\AutoMapperScriptLoader;
 use Skraeda\AutoMapper\Console\Commands\MakeMapper;
+use Skraeda\AutoMapper\Console\Commands\MappingCache;
 use Skraeda\AutoMapper\Console\Commands\MappingClear;
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
@@ -119,7 +120,11 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
     protected function addCommands()
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([MakeMapper::class, MappingClear::class]);
+            $this->commands([
+                MakeMapper::class,
+                MappingClear::class,
+                MappingCache::class
+            ]);
         }
     }
 }

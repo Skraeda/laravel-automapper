@@ -17,14 +17,14 @@ class MappingClear extends Command
      *
      * @var string
      */
-    protected $signature = 'mapping:clear';
+    protected $signature = 'automapper:clear';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Clear mapping cache';
+    protected $description = 'Clear AutoMapper cache';
 
     /**
      * Execute the console command.

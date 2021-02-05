@@ -161,6 +161,28 @@ Register custom mappers
 ]
 ```
 
+Starting with Version 2, you can have Custom Mappers automatically discovered by enabling directory scanning in the `mapping.php` config file. Mappers found within the directories you specify in `mapping.php` with the `Maps` attribute will be automatically registered.
+
+```php
+namespace App\Mappings;
+
+use App\Models\Employee;
+use App\Models\EmployeeDto;
+use Skraeda\AutoMapper\Attributes\Maps;
+
+#[Maps(Employee::class, EmployeeDto::class)]
+class EmployeeToDtoMapper extends CustomMapper
+{
+    // Code..
+}
+```
+
+If you have multiple mappers discovered this way, you may want to turn on caching for your production environment within the `mapping.php` config file. With caching enabled, the first request will scan your files for mappers and store them in a cache file (default: app_dir/storage/app/framework/automapper/automapper.php) that's loaded for the next requests.
+
+You can use `php artisan mapping:clear` to clear the mapping cache directory if you add new mappers.
+
+You can also use `php artisan mapping:cache` to immediately scan and cache the mappers.
+
 ## Helpers and methods
 ### Collection macro
 You can use the `autoMap` method on a collection to map into some target class.
@@ -237,3 +259,10 @@ Alternatively
 ```
 composer stan
 ```
+
+## Changelog
+
+### v1.2.0
+* Add Laravel 8 support
+
+### V1.1.0
