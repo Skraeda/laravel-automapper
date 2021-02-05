@@ -37,7 +37,7 @@ jobs:
 
       - run:
           name: Run PHPUnit
-          command: ~/app/vendor/bin/phpunit --coverage-clover ~/app/coverage/coverage.xml --log-junit ~/app/coverage/junit.xml
+          command: XDEBUG_MODE=coverage ~/app/vendor/bin/phpunit --coverage-clover ~/app/coverage/coverage.xml --log-junit ~/app/coverage/junit.xml
       - store_test_results:
           path: ~/app/coverage
       - store_artifacts:
