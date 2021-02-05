@@ -54,9 +54,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      */
     public function boot()
     {
-        $this->publishes([__DIR__.'/../../config/mapping.php' => config_path('mapping.php')], 'automapper-config');
-
-        $this->addCommands();
+        $this->addConsoleUtils();
 
         $this->addCollectionMacro();
 
@@ -117,14 +115,29 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      *
      * @return void
      */
-    protected function addCommands()
+    protected function addConsoleUtils()
     {
         if ($this->app->runningInConsole()) {
+            $this->publishes([
+                $this->package_path('config/mapping.php') => config_path('mapping.php')
+            ], 'automapper-config');
+
             $this->commands([
                 MakeMapper::class,
                 MappingClear::class,
                 MappingCache::class
             ]);
         }
+    }
+
+    /**
+     * Get absolute package dir.
+     *
+     * @param string $relative
+     * @return string
+     */
+    protected function package_path(string $relative): string
+    {
+        return __DIR__.'/../../'.$relative;
     }
 }
