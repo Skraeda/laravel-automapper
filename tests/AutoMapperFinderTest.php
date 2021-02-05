@@ -46,7 +46,7 @@ class AutoMapperFinderTest extends TestCase
     {
         $this->expectException(AutoMapperFinderException::class);
 
-        (new AutoMapperFinder)->scanMappingDirectory('.');
+        (new AutoMapperFinder(__DIR__))->scanMappingDirectory('cache');
     }
 
     /** @test */
