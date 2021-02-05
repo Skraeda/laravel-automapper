@@ -46,3 +46,7 @@ jobs:
       - run:
           name: Run Codecov
           command: bash <(curl -s https://codecov.io/bash)
+
+      - run:
+          name: Static analysis
+          command: vendor/bin/phpstan analyse -l 1 src tests
