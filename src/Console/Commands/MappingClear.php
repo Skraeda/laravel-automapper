@@ -24,7 +24,7 @@ class MappingClear extends Command
      *
      * @var string
      */
-    protected $description = 'Clear AutoMapper cache';
+    protected $description = 'Clear Custom Mapper cache file';
 
     /**
      * Execute the console command.

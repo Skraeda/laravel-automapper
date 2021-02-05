@@ -25,7 +25,7 @@ class MappingCache extends Command
      *
      * @var string
      */
-    protected $description = 'Cache AutoMapper';
+    protected $description = 'Save Custom Mappers to a cache file for faster loading';
 
     /**
      * Execute the console command.
