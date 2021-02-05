@@ -52,5 +52,5 @@
 
         // Default cache key for mappings
         'key' => env('AUTO_MAPPER_CACHE_KEY', 'automapper.php')
-    ]
+    ],
 ];
