@@ -44,7 +44,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
             config('mapping.cache.dir')
         ));
 
-        $this->mergeConfigFrom(__DIR__.'/../../config/mapping.php', 'mapping');
+        $this->mergeConfigFrom($this->package_path('config/mapping.php'), 'mapping');
     }
 
     /**
