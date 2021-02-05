@@ -4,6 +4,7 @@ namespace Skraeda\AutoMapper;
 
 use Illuminate\Filesystem\Filesystem;
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
+use Skraeda\AutoMapper\Contracts\AutoMapperScriptLoaderContract;
 use Skraeda\AutoMapper\Exceptions\AutoMapperCacheException;
 use Throwable;
 
@@ -21,6 +22,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * @param string $dir
      */
     public function __construct(
+        protected AutoMapperScriptLoaderContract $loader,
         protected Filesystem $fs,
         protected string $dir
     ) {
@@ -41,9 +43,9 @@ class AutoMapperCache implements AutoMapperCacheContract
         }
         
         try {
-            return require $path;
+            return $this->loader->require($path);
         } catch (Throwable $e) {
-            throw AutoMapperCacheException::wrap("Failed to load cache file $key", $e);
+            throw AutoMapperCacheException::wrap("Failed to load cache $path", $e);
         }
     }
 
@@ -64,7 +66,7 @@ class AutoMapperCache implements AutoMapperCacheContract
         $this->fs->put($path, '<?php return '.var_export($value, true).';'.PHP_EOL);
 
         try {
-            require $path;
+            $this->loader->require($path);
         } catch (Throwable $e) {
             $this->fs->delete($path);
 

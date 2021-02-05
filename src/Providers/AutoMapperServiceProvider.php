@@ -8,11 +8,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 use Skraeda\AutoMapper\AutoMapper;
 use Skraeda\AutoMapper\AutoMapperCache;
-use Skraeda\AutoMapper\AutoMapperOperator;
+use Skraeda\AutoMapper\AutoMapperFinder;
+use Skraeda\AutoMapper\AutoMapperScriptLoader;
 use Skraeda\AutoMapper\Console\Commands\MakeMapper;
+use Skraeda\AutoMapper\Console\Commands\MappingClear;
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
-use Skraeda\AutoMapper\Contracts\AutoMapperOperatorContract;
+use Skraeda\AutoMapper\Contracts\AutoMapperFinderContract;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 
 /**
@@ -33,9 +35,10 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
             new AutoMapperPlusAutoMapper
         ));
 
-        $this->app->bind(AutoMapperOperatorContract::class, fn () => new AutoMapperOperator);
+        $this->app->bind(AutoMapperFinderContract::class, fn () => new AutoMapperFinder);
 
         $this->app->bind(AutoMapperCacheContract::class, fn () => new AutoMapperCache(
+            new AutoMapperScriptLoader,
             app(Filesystem::class),
             config('mapping.cache.dir')
         ));
@@ -67,7 +70,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
     protected function addCustomMappers()
     {
         $cache = app(AutoMapperCacheContract::class);
-        $operator = app(AutoMapperOperatorContract::class);
+        $finder = app(AutoMapperFinderContract::class);
 
         $cacheKey = config('mapping.cache.key');
         $cacheHit = false;
@@ -81,14 +84,14 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
             $mappings = config('mapping.custom', []);
 
             if (config('mapping.scan.enabled')) {
-                $scan = $operator->scanMappingDirectory(config('mapping.scan.dirs', []));
+                $scan = $finder->scanMappingDirectory(config('mapping.scan.dirs', []));
 
                 $mappings = array_merge($mappings, $scan);
             }
         }
 
         foreach ($mappings as $mapper => $ctx) {
-            $operator->registerCustomMapper($mapper, $ctx['source'], $ctx['target']);
+            AutoMapperFacade::registerCustomMapper($mapper, $ctx['source'], $ctx['target']);
         }
 
         if (config('mapping.cache.enabled') && !$cacheHit) {
@@ -116,7 +119,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
     protected function addCommands()
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([MakeMapper::class]);
+            $this->commands([MakeMapper::class, MappingClear::class]);
         }
     }
 }

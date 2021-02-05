@@ -2,11 +2,13 @@
 
 namespace Skraeda\AutoMapper\Tests;
 
+use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Skraeda\AutoMapper\AutoMapperCache;
+use Skraeda\AutoMapper\Contracts\AutoMapperScriptLoaderContract;
 use Skraeda\AutoMapper\Exceptions\AutoMapperCacheException;
 
 /**
@@ -24,6 +26,13 @@ class AutoMapperCacheTest extends TestCase
     protected Filesystem|MockInterface $mockFs;
 
     /**
+     * Mock Script Loader
+     *
+     * @var \Skraeda\AutoMapper\Contracts\AutoMapperScriptLoaderContract|\Mockery\MockInterface
+     */
+    protected AutoMapperScriptLoaderContract|MockInterface $mockLoader;
+
+    /**
      * Setup
      *
      * @return void
@@ -33,6 +42,7 @@ class AutoMapperCacheTest extends TestCase
         parent::setUp();
 
         $this->mockFs = Mockery::mock(Filesystem::class);
+        $this->mockLoader = Mockery::mock(AutoMapperScriptLoaderContract::class);
     }
 
     /** @test */
@@ -40,7 +50,7 @@ class AutoMapperCacheTest extends TestCase
     {
         $this->expectException(AutoMapperCacheException::class);
 
-        $cache = new AutoMapperCache($this->mockFs, __DIR__);
+        $cache = new AutoMapperCache($this->mockLoader, $this->mockFs, __DIR__);
 
         $cache->get([]);
     }
@@ -50,7 +60,7 @@ class AutoMapperCacheTest extends TestCase
     {
         $this->expectException(AutoMapperCacheException::class);
 
-        $cache = new AutoMapperCache($this->mockFs, __DIR__);
+        $cache = new AutoMapperCache($this->mockLoader, $this->mockFs, __DIR__);
 
         $cache->get('key');
     }
@@ -62,8 +72,36 @@ class AutoMapperCacheTest extends TestCase
         
         $this->mockFs->shouldReceive('exists')->andReturn(false);
 
-        $cache = new AutoMapperCache($this->mockFs, __DIR__);
+        $cache = new AutoMapperCache($this->mockLoader, $this->mockFs, __DIR__);
 
         $this->assertEquals($default, $cache->get('key.php', $default));
+    }
+
+    /** @test */
+    public function itThrowsExceptionIfFailingToLoadFile()
+    {
+        $this->expectException(AutoMapperCacheException::class);
+
+        $file = 'somethingthatdoesntexist.php';
+        
+        $this->mockFs->shouldReceive('exists')->with(__DIR__.DIRECTORY_SEPARATOR.$file)->andReturn(true);
+        $this->mockLoader->shouldReceive('require')->with(__DIR__.DIRECTORY_SEPARATOR.$file)->andThrow(new Exception("Random error"));
+
+        $cache = new AutoMapperCache($this->mockLoader, $this->mockFs, __DIR__);
+
+        $cache->get($file);
+    }
+
+    /** @test */
+    public function itLoadsFileIfItExists()
+    {
+        $file = 'exists.php';
+        
+        $this->mockFs->shouldReceive('exists')->with(__DIR__.DIRECTORY_SEPARATOR.$file)->andReturn(true);
+        $this->mockLoader->shouldReceive('require')->with(__DIR__.DIRECTORY_SEPARATOR.$file)->andReturn('value');
+
+        $cache = new AutoMapperCache($this->mockLoader, $this->mockFs, __DIR__);
+
+        $this->assertEquals('value', $cache->get($file));
     }
 }

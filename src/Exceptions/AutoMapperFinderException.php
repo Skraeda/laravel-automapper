@@ -3,10 +3,10 @@
 namespace Skraeda\AutoMapper\Exceptions;
 
 /**
- * Exception for AutoMapperOperator
+ * Exception for AutoMapperFinder
  *
  * @author Gunnar Örn Baldursson <gunnar@sjukraskra.is>
  */
-class AutoMapperOperatorException extends AutoMapperException
+class AutoMapperFinderException extends AutoMapperException
 {
 }

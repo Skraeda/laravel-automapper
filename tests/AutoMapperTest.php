@@ -9,6 +9,9 @@ use AutoMapperPlus\MapperInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Skraeda\AutoMapper\AutoMapper;
+use Skraeda\AutoMapper\Tests\Data\A;
+use Skraeda\AutoMapper\Tests\Data\ABMapper;
+use Skraeda\AutoMapper\Tests\Data\B;
 
 /**
  * Unit tests for \Skraeda\AutoMapper\AutoMapper
@@ -66,5 +69,18 @@ class AutoMapperTest extends TestCase
         $configMock = Mockery::mock(AutoMapperConfigInterface::class);
         $this->mapper->shouldReceive('getConfiguration')->andReturn($configMock);
         $this->assertEquals($configMock, (new AutoMapper($this->mapper))->getConfiguration());
+    }
+
+    public function testRegisterCustomMapper()
+    {
+        $configMock = Mockery::mock(AutoMapperConfigInterface::class);
+        $mappingMock = Mockery::mock(MappingInterface::class);
+        $this->mapper->shouldReceive('getConfiguration')->andReturn($configMock);
+        $configMock->shouldReceive('registerMapping')->with(A::class, B::class)->andReturn($mappingMock);
+        $mappingMock->shouldReceive('useCustomMapper')->with(Mockery::on(fn ($class) => get_class($class) === ABMapper::class));
+
+        $result = (new AutoMapper($this->mapper))->registerCustomMapper(ABMapper::class, A::class, B::class);
+
+        $this->assertNull($result);
     }
 }
