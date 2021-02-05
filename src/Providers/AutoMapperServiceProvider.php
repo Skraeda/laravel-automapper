@@ -54,7 +54,7 @@ class AutoMapperServiceProvider extends IlluminateServiceProvider
      */
     public function boot()
     {
-        $this->publishes([__DIR__.'/../../config/mapping.php' => config_path('mapping.php')]);
+        $this->publishes([__DIR__.'/../../config/mapping.php' => config_path('mapping.php')], 'automapper-config');
 
         $this->addCommands();
 
