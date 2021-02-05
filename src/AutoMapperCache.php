@@ -59,7 +59,7 @@ class AutoMapperCache implements AutoMapperCacheContract
 
         $path = $this->keyPath($key);
 
-        $this->fs->makeDirectory($path, 0755, true, true);
+        $this->fs->makeDirectory($this->dir, 0755, true, true);
 
         $this->delete($key);
 
@@ -146,6 +146,10 @@ class AutoMapperCache implements AutoMapperCacheContract
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
+     */
     public function deleteMultiple($keys)
     {
         $this->validateKeyArray($keys);
