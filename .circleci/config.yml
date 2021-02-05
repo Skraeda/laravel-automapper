@@ -8,15 +8,15 @@ jobs:
     working_directory: ~/app
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
+      - image: cimg/php:8.0
     steps:
       - checkout
 
       - run:
           name: Install prerequisites
           command: |
-            sudo apt update
-            sudo docker-php-ext-install zip
+            sudo apt-get update
+            sudo apt-get install -y php-zip
 
       # Download and cache dependencies
       - restore_cache:
