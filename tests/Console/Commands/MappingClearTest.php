@@ -4,6 +4,7 @@ namespace Skraeda\AutoMapper\Tests\Console\Commands;
 
 use Mockery;
 use Orchestra\Testbench\TestCase;
+use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 use Skraeda\AutoMapper\Providers\AutoMapperServiceProvider;
 

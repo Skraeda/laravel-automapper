@@ -13,6 +13,18 @@ use Throwable;
 class AutoMapperException extends Exception
 {
     /**
+     * Constructor
+     *
+     * @param string $message
+     * @param integer $code
+     * @param \Throwable|null $previous
+     */
+    final public function __construct($message = "", $code = 0, ?Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+    }
+
+    /**
      * Wrap Throwable
      *
      * @param string $message
