@@ -61,4 +61,12 @@ class AutoMapper implements AutoMapperContract
     {
         return $this->mapper->getConfiguration();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function registerCustomMapper(string $mapper, string $source, string $target): void
+    {
+        $this->getConfiguration()->registerMapping($source, $target)->useCustomMapper(new $mapper);
+    }
 }

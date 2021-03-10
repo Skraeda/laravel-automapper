@@ -2,7 +2,10 @@
 
 namespace Skraeda\AutoMapper\Tests\Console\Commands;
 
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase;
+use Skraeda\AutoMapper\Console\Commands\MakeMapper;
 use Skraeda\AutoMapper\Support\Facades\AutoMapperFacade;
 use Skraeda\AutoMapper\Providers\AutoMapperServiceProvider;
 
@@ -15,12 +18,20 @@ class MakeMapperTest extends TestCase
 {
     public function testCommand()
     {
-        $response = $this->artisan('make:mapper', ['name' => 'MyMapper']);
-        if (is_int($response)) {
-            $this->assertEquals(0, $response);
-        } else {
-            $response->assertExitCode(0);
-        }
+        $this->artisan('make:mapper', ['name' => 'MyMapper'])->assertExitCode(0);
+    }
+
+    public function testStub()
+    {
+        $cmd = new MakeMapper(new Filesystem);
+
+        $stubPath = Str::replaceFirst(
+            'tests/',
+            'src/',
+            implode(DIRECTORY_SEPARATOR, [__DIR__, 'Stubs', 'make-mapper.stub'])
+        );
+
+        $this->assertEquals($stubPath, $cmd->getStubLocation());
     }
 
     /**

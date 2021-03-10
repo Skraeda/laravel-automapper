@@ -13,6 +13,7 @@ use Skraeda\AutoMapper\Contracts\AutoMapperContract;
  * @method static mixed mapToObject(array|object $source, object $target, array $context = [])
  * @method static \Illuminate\Support\Collection mapMultiple($collection, string $targetClass, array $context = [])
  * @method static \AutoMapperPlus\Configuration\AutoMapperConfigInterface getConfiguration()
+ * @method static void registerCustomMapper(string $mapper, string $source, string $target)
  */
 class AutoMapperFacade extends IlluminateFacade
 {

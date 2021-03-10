@@ -8,15 +8,15 @@ jobs:
     working_directory: ~/app
     docker:
       # Specify the version you desire here
-      - image: circleci/php:7.1-node-browsers
+      - image: cimg/php:8.0
     steps:
       - checkout
 
       - run:
           name: Install prerequisites
           command: |
-            sudo apt update
-            sudo docker-php-ext-install zip
+            sudo apt-get update
+            sudo apt-get install -y php-zip
 
       # Download and cache dependencies
       - restore_cache:
@@ -37,7 +37,7 @@ jobs:
 
       - run:
           name: Run PHPUnit
-          command: ~/app/vendor/bin/phpunit --coverage-clover ~/app/coverage/coverage.xml --log-junit ~/app/coverage/junit.xml
+          command: XDEBUG_MODE=coverage ~/app/vendor/bin/phpunit --coverage-clover ~/app/coverage/coverage.xml --log-junit ~/app/coverage/junit.xml
       - store_test_results:
           path: ~/app/coverage
       - store_artifacts:
@@ -46,3 +46,7 @@ jobs:
       - run:
           name: Run Codecov
           command: bash <(curl -s https://codecov.io/bash)
+
+      - run:
+          name: Static analysis
+          command: vendor/bin/phpstan analyse -l 1 src tests
