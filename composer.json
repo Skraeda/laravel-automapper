@@ -4,7 +4,7 @@
     "type": "library",
     "license": "MIT",
     "keywords": ["automapper", "converter", "object-to-object", "laravel"],
-    "version": "v2.0.0-RC1",
+    "version": "v2.0.0",
     "authors": [
         {
             "name": "Gunnar Örn Baldursson",

@@ -207,6 +207,7 @@ public function map($source, $targetClass, array $context = []);
 public function mapToObject($source, $target, array $context = []);
 public function mapMultiple($collection, string $targetClass, array $context = []): \Illuminate\Support\Collection;
 public function getConfiguration(): \AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+public function registerCustomMapper(string $mapper, string $source, string $target): void;
 ```
 
 ### AutoMapperFacade
@@ -216,6 +217,7 @@ public function getConfiguration(): \AutoMapperPlus\Configuration\AutoMapperConf
  * @method static mixed mapToObject($source, $target, array $context)
  * @method static \Illuminate\Support\Collection mapMultiple($collection, string $targetClass, array $context)
  * @method static \AutoMapperPlus\Configuration\AutoMapperConfigInterface getConfiguration()
+ * @method static void registerCustomMapper(string $mapper, string $source, string $target)
  */
 ```
 
@@ -261,6 +263,13 @@ composer stan
 ```
 
 ## Changelog
+
+### V2.0.0
+* Add the `Maps` attribute
+* Adds several interfaces to scan and cache custom mappers discovered with the `Maps` attribute
+* Adds config options to enable scanning and caching
+* Adds artisan commands `mapping:clear` and `mapping:cache` to manage mapping cache
+* Adds method `registerCustomMapper` to \Skraeda\AutoMapper\Contracts\AutoMapperContract
 
 ### v1.2.0
 * Add Laravel 8 support
