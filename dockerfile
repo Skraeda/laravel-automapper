@@ -1,4 +1,4 @@
-FROM php:7.1-cli
+FROM php:8.0-cli
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -22,8 +22,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install extensions
 RUN docker-php-ext-install zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include --with-jpeg-dir=/usr/include --with-png-dir=/usr/include
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install -j$(nproc) gd
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -33,13 +33,23 @@ class MakeMapper extends GeneratorCommand
     protected $type = 'Mapper';
 
     /**
+     * Get stub location path
+     *
+     * @return string
+     */
+    public function getStubLocation(): string
+    {
+        return $this->getStub();
+    }
+
+    /**
      * Get the stub file for the generator.
      *
      * @return string
      */
     protected function getStub()
     {
-        return  __DIR__ . '/Stubs/make-mapper.stub';
+        return implode(DIRECTORY_SEPARATOR, [__DIR__, 'Stubs', 'make-mapper.stub']);
     }
 
     /**
