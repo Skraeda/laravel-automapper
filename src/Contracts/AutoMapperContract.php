@@ -3,6 +3,7 @@
 namespace Skraeda\AutoMapper\Contracts;
 
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Configuration\MappingInterface;
 use Illuminate\Support\Collection;
 
 /**
@@ -62,4 +63,13 @@ interface AutoMapperContract
      * @return void
      */
     public function registerCustomMapper(string $mapper, string $source, string $target): void;
+
+    /**
+     * Register a mapping between source and target class.
+     *
+     * @param string $source
+     * @param string $target
+     * @return \AutoMapperPlus\Configuration\MappingInterface
+     */
+    public function registerMapping(string $source, string $target): MappingInterface;
 }

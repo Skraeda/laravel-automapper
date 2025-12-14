@@ -4,6 +4,7 @@ namespace Skraeda\AutoMapper;
 
 use AutoMapperPlus\AutoMapperInterface;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
+use AutoMapperPlus\Configuration\MappingInterface;
 use Illuminate\Support\Collection;
 use Skraeda\AutoMapper\Contracts\AutoMapperContract;
 
@@ -68,5 +69,13 @@ class AutoMapper implements AutoMapperContract
     public function registerCustomMapper(string $mapper, string $source, string $target): void
     {
         $this->getConfiguration()->registerMapping($source, $target)->useCustomMapper(new $mapper);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function registerMapping(string $source, string $target): MappingInterface
+    {
+        return $this->getConfiguration()->registerMapping($source, $target);
     }
 }
