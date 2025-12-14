@@ -2,6 +2,7 @@
 
 namespace Skraeda\AutoMapper;
 
+use DateInterval;
 use Illuminate\Filesystem\Filesystem;
 use Skraeda\AutoMapper\Contracts\AutoMapperCacheContract;
 use Skraeda\AutoMapper\Contracts\AutoMapperScriptLoaderContract;
@@ -32,7 +33,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         $this->validateKey($key);
 
@@ -41,7 +42,7 @@ class AutoMapperCache implements AutoMapperCacheContract
         if (!$this->fs->exists($path)) {
             return $default;
         }
-        
+
         try {
             return $this->loader->require($path);
         } catch (Throwable $e) {
@@ -53,7 +54,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
         $this->validateKey($key);
 
@@ -80,7 +81,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         $this->validateKey($key);
 
@@ -96,7 +97,7 @@ class AutoMapperCache implements AutoMapperCacheContract
     /**
      * {@inheritDoc}
      */
-    public function clear()
+    public function clear(): bool
     {
         return $this->fs->cleanDirectory($this->dir);
     }
@@ -105,7 +106,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         $this->validateKey($key);
 
@@ -118,7 +119,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function getMultiple($keys, $default = null)
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $this->validateKeyArray($keys);
 
@@ -135,7 +136,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
     {
         $this->validateKeyArray($values);
 
@@ -150,7 +151,7 @@ class AutoMapperCache implements AutoMapperCacheContract
      * {@inheritDoc}
      * @throws \Skraeda\AutoMapper\Exceptions\AutoMapperCacheException
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple(iterable $keys): bool
     {
         $this->validateKeyArray($keys);
 
@@ -159,7 +160,7 @@ class AutoMapperCache implements AutoMapperCacheContract
                 return false;
             }
         }
-        
+
         return true;
     }
 
